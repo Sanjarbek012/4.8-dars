@@ -5,9 +5,9 @@ const authorization = require("../middleware/authorization");
 const carRouter = Router();
 
 carRouter.get("/all", getAllCars);
-carRouter.get("/:id", getOneCar); // ID parametr qo'shildi
+carRouter.get("/:id", getOneCar); 
 carRouter.post("/add", authorization, addCar);
-carRouter.patch("/update/:id", authorization, updateCar); // ID parametr qo'shildi
-carRouter.delete("/delete/:id", authorization, deleteCar); // ID parametr qo'shildi
+carRouter.patch("/update/:id", authorization, updateCar); 
+carRouter.delete("/delete/:id", authorization, deleteCar);
 
 module.exports = carRouter;
