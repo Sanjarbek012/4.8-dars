@@ -2,7 +2,6 @@ const {Router} = require("express")
 const { getAllProducts, getOneProducts, addProduct, updateProduct, deleteProducts } = require("../controller/product.controller")
 const authorization = require("../middleware/authorization")
 
-
 const productRouter = Router()
 
 productRouter.get("/get_all_products", getAllProducts)

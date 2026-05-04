@@ -2,101 +2,51 @@ const { read_file, write_file } = require("../fs/file-manager");
 const { v4 } = require("uuid");
 
 const getAllCars = async (req, res) => {
-  const cars = read_file("cars.json");
+  const cars = read_file("cars.json") || [];
   res.status(200).json(cars);
 };
 
-// POST
 const addCar = async (req, res) => {
   const { name, price } = req.body;
+  if (!name || !price) return res.status(400).json({ message: "Ma'lumot to'liq emas" });
 
-  const cars = read_file("cars.json");
-
-  cars.push({
-    id: v4(),
-    name,
-    price,
-  });
-
+  const cars = read_file("cars.json") || [];
+  const newCar = { id: v4(), name, price };
+  cars.push(newCar);
   write_file("cars.json", cars);
-
-  res.status(201).json({
-    message: "Added new car",
-  });
+  res.status(201).json({ message: "Mashina qo'shildi", car: newCar });
 };
 
-// GET ONE
 const getOneCar = async (req, res) => {
   const { id } = req.params;
-
-  const cars = read_file("cars.json");
-
-  const foundedCar = cars.find((item) => item.id === id);
-
-  if (!foundedCar) {
-    return res.status(404).json({
-      message: "Car not found",
-    });
-  }
-  res.status(200).json(foundedCar);
+  const cars = read_file("cars.json") || [];
+  const car = cars.find(c => c.id === id);
+  if (!car) return res.status(404).json({ message: "Mashina topilmadi" });
+  res.status(200).json(car);
 };
 
-// PATCH
 const updateCar = async (req, res) => {
   const { id } = req.params;
   const { name, price } = req.body;
-  const cars = read_file("cars.json");
+  let cars = read_file("cars.json") || [];
+  const index = cars.findIndex(c => c.id === id);
 
-  const foundedCar = cars.find((item) => item.id === id);
+  if (index === -1) return res.status(404).json({ message: "Topilmadi" });
 
-  if (!foundedCar) {
-    return res.status(404).json({
-      message: "Car not found",
-    });
-  }
-
-  cars.forEach((item) => {
-    if (item.id === id) {
-      item.name = name ? name : item.name;
-      item.price = price ? price : item.price;
-    }
-  });
+  cars[index] = { ...cars[index], name: name || cars[index].name, price: price || cars[index].price };
   write_file("cars.json", cars);
-
-  res.status(200).json({
-    message: "Car updated",
-  });
+  res.status(200).json({ message: "Yangilandi" });
 };
 
-// DELETE
 const deleteCar = async (req, res) => {
   const { id } = req.params;
-  const cars = read_file("cars.json");
+  let cars = read_file("cars.json") || [];
+  const filtered = cars.filter(c => c.id !== id);
+  
+  if (cars.length === filtered.length) return res.status(404).json({ message: "Topilmadi" });
 
-  const foundedCar = cars.find((item) => item.id === id);
-
-  if (!foundedCar) {
-    return res.status(404).json({
-      message: "Car not found",
-    });
-  }
-
-  cars.forEach((item, idx) => {
-    if (item.id === id) {
-      cars.splice(idx, 1);
-    }
-  });
-  write_file("cars.json", cars);
-  res.status(200).json({
-    message: "Car deleted",
-  });
+  write_file("cars.json", filtered);
+  res.status(200).json({ message: "O'chirildi" });
 };
 
-
-module.exports = {
-  getAllCars,
-  addCar,
-  getOneCar,
-  updateCar,
-  deleteCar,
-}
+module.exports = { getAllCars, addCar, getOneCar, updateCar, deleteCar };

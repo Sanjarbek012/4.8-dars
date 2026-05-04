@@ -8,6 +8,7 @@ const write_file = (file_name, data) => {
   return fs.writeFileSync("./data/" + file_name, JSON.stringify(data, null, 4))
 }
 
+
 module.exports = {
   read_file,
   write_file
