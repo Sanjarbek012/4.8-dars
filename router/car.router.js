@@ -1,0 +1,10 @@
+const {Router} = require("express")
+const { getAllCars, getOneCar, addCar, updateCar, deleteCar } = require("../controller/car.controller")
+const authorization = require("../middleware/authorization")
+
+const carRouter = Router()
+carRouter.get("/get_all_cars", getAllCars)
+carRouter.get("/get_one_car", getOneCar)
+carRouter.post("/add_product", authorization, addCar)
+carRouter.patch("/update_car", authorization, updateCar)
+carRouter.delete("/delete_car", authorization, deleteCar)
