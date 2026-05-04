@@ -52,7 +52,7 @@ const login = async (req, res) => {
   const checkPassword = await bcrypt.compare(password, foundedEmail.password);
   if (checkPassword) {
     const payload = { id: foundedEmail.id, email: foundedEmail.email }
-    const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "5s" })
+    const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "1m" })
 
     return res.status(200).json({
       message: "Success",
